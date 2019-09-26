@@ -1,11 +1,19 @@
+use std::rc::Rc;
 use super::vec::Vec3;
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
+use super::material::Material;
 
-#[derive(Copy, Clone, Debug)]
 pub struct Sphere {
     center: Vec3,
-    radius: f64
+    radius: f64,
+    material: Rc<dyn Material>
+}
+
+impl Sphere {
+    pub fn new(center: Vec3, radius: f64, material: Rc<dyn Material>) -> Self {
+        Sphere{center, radius, material}
+    }
 }
 
 impl Hittable for Sphere {
@@ -22,7 +30,8 @@ impl Hittable for Sphere {
                 return Some(HitRecord{
                     t: temp,
                     p: p,
-                    normal: (p - self.center) / self.radius
+                    normal: (p - self.center) / self.radius,
+                    material: Rc::clone(&self.material)
                 });
             }
             let temp = (-b + f64::sqrt(b * b - a * c)) / a;
@@ -31,7 +40,8 @@ impl Hittable for Sphere {
                 return Some(HitRecord{
                     t: temp,
                     p: p,
-                    normal: (p - self.center) / self.radius
+                    normal: (p - self.center) / self.radius,
+                    material: Rc::clone(&self.material)
                 });
             }
         }
