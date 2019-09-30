@@ -16,11 +16,33 @@ pub fn random_in_unit_sphere() -> Vec3 {
     p
 }
 
+const PI_DIV_180: f64 = std::f64::consts::PI / 180.0;
+
+pub fn degrees_to_radians(degrees: f64) -> f64 {
+    // degrees * std::f64::consts::PI / 180.0
+    degrees * PI_DIV_180
+}
+
+pub fn radians_to_degrees(radians: f64) -> f64 {
+    //radians * 180.0 / std::f64::consts::PI
+    radians / PI_DIV_180
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
     fn drand48() {
         let v: f64 = super::drand48();
         assert!(v > 0.0 && v < 1.0);
+    }
+
+    #[test]
+    fn degrees_to_radians() {
+        assert_eq!(super::degrees_to_radians(180.0), 3.141592653589793);
+    }
+
+    #[test]
+    fn radians_to_degrees() {
+        assert_eq!(super::radians_to_degrees(3.141592653589793), 180.0);
     }
 }

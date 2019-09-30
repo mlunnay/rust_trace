@@ -9,12 +9,19 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(origin: Vec3, lower_left_corner: Vec3, horizontal: Vec3, vertical: Vec3) -> Self {
+    // vfov is vertical field of view in radians
+    pub fn new(look_from: Vec3, look_at: Vec3, vup: Vec3, vfov: f64, aspect: f64) -> Self {
+        let half_height = f64::tan(vfov / 2.0);
+        let half_width = aspect * half_height;
+        let w = (look_from - look_at).normalize();
+        let u = Vec3::cross(&vup, &w);
+        let v = Vec3::cross(&w, &u);
+        let lower_left_corner = look_from - half_width * u - half_height * v - w;
         Camera{
-            origin,
+            origin: look_from,
             lower_left_corner,
-            horizontal,
-            vertical
+            horizontal: 2.0 * half_width * u,
+            vertical: 2.0 * half_height * u
         }
     }
 
