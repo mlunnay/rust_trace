@@ -1,4 +1,4 @@
-use core::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
+use core::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign, Neg};
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
@@ -62,6 +62,14 @@ impl From<[f64;3]> for Vec3 {
 
 impl From<(f64, f64, f64)> for Vec3 {
     fn from(tup: (f64, f64, f64)) -> Vec3 { Vec3{x: tup.0, y: tup.1, z: tup.2} }
+}
+
+impl Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Vec3 {
+        Vec3{x: -self.x, y: -self.y, z: -self.z}
+    }
 }
 
 impl Add<Vec3> for Vec3 {
@@ -219,6 +227,14 @@ mod tests {
         assert_eq!(v.x, 1.0 / l);
         assert_eq!(v.y, 4.0 / l);
         assert_eq!(v.z, 2.0 / l);
+    }
+
+    #[test]
+    fn neg() {
+        let v = -Vec3::new(1.0, 4.0, 2.0);
+        assert_eq!(v.x, -1.0);
+        assert_eq!(v.y, -4.0);
+        assert_eq!(v.z, -2.0);
     }
 
     #[test]
