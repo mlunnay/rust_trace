@@ -16,6 +16,15 @@ pub fn random_in_unit_sphere() -> Vec3 {
     p
 }
 
+pub fn random_in_unit_disk() -> Vec3 {
+    let mut p: Vec3;
+    while {
+        p = 2.0 * Vec3{x: drand48(), y: drand48(), z: 0.0} - Vec3{x: 1.0, y: 1.0, z: 0.0};
+        Vec3::dot(&p, &p) >= 1.0
+    }{}
+    p
+}
+
 const PI_DIV_180: f64 = std::f64::consts::PI / 180.0;
 
 pub fn degrees_to_radians(degrees: f64) -> f64 {
