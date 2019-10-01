@@ -95,10 +95,10 @@ impl Material for Dielectric {
             }
         }
         if drand48() < refracted_prob {
-            scattered = Ray::new(hit_record.p, reflected);
+            scattered = Ray::new(hit_record.p + super::EPSILON * hit_record.normal, reflected);
         }
         else {
-            scattered = Ray::new(hit_record.p, refracted);
+            scattered = Ray::new(hit_record.p - super::EPSILON * hit_record.normal, refracted);
         }
         Some((scattered, attenuation))
     }

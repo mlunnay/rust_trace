@@ -20,27 +20,30 @@ impl Hittable for Sphere {
     fn hit(&self, r: Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = r.origin - self.center;
         let a = Vec3::dot(&r.direction, &r.direction);
-        let b = 2.0 * Vec3::dot(&oc, &r.direction);
+        let b = Vec3::dot(&oc, &r.direction);
         let c = Vec3::dot(&oc, &oc) - self.radius * self.radius;
-        let discriminant = b * b - 4.0 * a * c;
+        let discriminant = b * b - a * c;
+        // the point is "nudged" along the normal to account for precission error to avoid artifacts in reflection
         if discriminant > 0.0 {
-            let temp = (-b - f64::sqrt(b * b - a * c)) / a;
+            let temp = (-b - f64::sqrt(discriminant)) / a;
             if temp < t_max && temp > t_min {
                 let p = r.point_at_parameter(temp);
+                let normal = (p - self.center) / self.radius;
                 return Some(HitRecord{
                     t: temp,
-                    p: p,
-                    normal: (p - self.center) / self.radius,
+                    p: p + super::EPSILON * normal,
+                    normal: normal,
                     material: Rc::clone(&self.material)
                 });
             }
-            let temp = (-b + f64::sqrt(b * b - a * c)) / a;
+            let temp = (-b + f64::sqrt(discriminant)) / a;
             if temp < t_max && temp > t_min {
                 let p = r.point_at_parameter(temp);
+                let normal = (p - self.center) / self.radius;
                 return Some(HitRecord{
                     t: temp,
-                    p: p,
-                    normal: (p - self.center) / self.radius,
+                    p: p + super::EPSILON * normal,
+                    normal: normal,
                     material: Rc::clone(&self.material)
                 });
             }
