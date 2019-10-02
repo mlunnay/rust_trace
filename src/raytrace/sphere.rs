@@ -3,6 +3,7 @@ use super::vec::Vec3;
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
 use super::material::Material;
+use super::aabb::AABB;
 
 pub struct Sphere {
     center: Vec3,
@@ -49,5 +50,9 @@ impl Hittable for Sphere {
             }
         }
         None
+    }
+
+    fn bounding_box(&self) -> Option<AABB> {
+        Some(AABB::new(self.center - self.radius, self.center + self.radius))
     }
 }

@@ -26,8 +26,7 @@ fn main() {
         8.4
     );
     
-    let mut scene = Scene::new(width, height, 10, camera);
-    scene.generate();
+    let scene = Scene::new(width, height, 100, camera);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
 

@@ -1,29 +1,30 @@
 use std::rc::Rc;
 use crate::raytrace::util::drand48;
-use crate::raytrace::hittable_list::HittableList;
 use crate::raytrace::hittable::Hittable;
 use crate::raytrace::ray::Ray;
 use crate::raytrace::vec::Vec3;
 use crate::raytrace::camera::Camera;
 use crate::raytrace::sphere::Sphere;
 use crate::raytrace::material::{Metal, Lambertian, Dielectric};
+use crate::raytrace::bvh::BVHNode;
 
 pub struct Scene {
     pub width: u32,
     pub height: u32,
     pub samples: u32,
-    objects: HittableList,
+    objects: BVHNode,
     camera: Camera
 }
 
 impl Scene {
     pub fn new(width: u32, height: u32, samples: u32, camera: Camera) -> Self {
-        Scene{ width, height, samples, objects: HittableList::new(), camera }
+        let objects = Rc::try_unwrap(BVHNode::construct(Scene::generate())).unwrap();
+        Scene{ width, height, samples, objects: objects, camera }
     }
 
-    pub fn generate(&mut self) {
-        self.objects = HittableList::new();
-        self.objects.add(Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Rc::new(Lambertian::new(Vec3::new(0.5, 0.5, 0.5))))));
+    pub fn generate() -> Vec<Box<dyn Hittable>> {
+        let mut objects: Vec<Box<dyn Hittable>> = Vec::new();
+        objects.push(Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Rc::new(Lambertian::new(Vec3::new(0.5, 0.5, 0.5))))));
 
         for a in -11..11 {
             for b in -11..11 {
@@ -31,21 +32,23 @@ impl Scene {
                 let center = Vec3::new(a as f64 + 0.9 * drand48(), 0.2, b as f64 + 0.9 * drand48());
                 if (center - Vec3::new(4.0,0.2,0.0)).length() > 0.9 {
                     if choose_material < 0.8 {
-                        self.objects.add(Box::new(Sphere::new(center, 0.2, Rc::new(Lambertian::new(Vec3::new(drand48() * drand48(), drand48() * drand48(), drand48() * drand48()))))));
+                        objects.push(Box::new(Sphere::new(center, 0.2, Rc::new(Lambertian::new(Vec3::new(drand48() * drand48(), drand48() * drand48(), drand48() * drand48()))))));
                     }
                     else if choose_material < 0.95 {
-                        self.objects.add(Box::new(Sphere::new(center, 0.2, Rc::new(Metal::new(Vec3::new(0.5*(1.0 + drand48()), 0.5*(1.0 + drand48()), 0.5*(1.0 + drand48())), 0.5*(1.0 + drand48()))))));
+                        objects.push(Box::new(Sphere::new(center, 0.2, Rc::new(Metal::new(Vec3::new(0.5*(1.0 + drand48()), 0.5*(1.0 + drand48()), 0.5*(1.0 + drand48())), 0.5*(1.0 + drand48()))))));
                     }
                     else {
-                        self.objects.add(Box::new(Sphere::new(center, 0.2, Rc::new(Dielectric::new(1.5)))));
+                        objects.push(Box::new(Sphere::new(center, 0.2, Rc::new(Dielectric::new(1.5)))));
                     }
                 }
             }
         }
 
-        self.objects.add(Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Rc::new(Dielectric::new(1.5)))));
-        self.objects.add(Box::new(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, Rc::new(Lambertian::new(Vec3::new(0.4, 0.2, 0.1))))));
-        self.objects.add(Box::new(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, Rc::new(Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)))));
+        objects.push(Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Rc::new(Dielectric::new(1.5)))));
+        objects.push(Box::new(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, Rc::new(Lambertian::new(Vec3::new(0.4, 0.2, 0.1))))));
+        objects.push(Box::new(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, Rc::new(Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)))));
+
+        objects
     }
 
     pub fn color_at(&self, u: f64, v: f64) -> Vec3 {

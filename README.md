@@ -1,1 +1,1 @@
-A Raytracer implemented in rust to learn rust.
+Implementation of Ray Tracing in a Weekend and Ray Tracing: The Next Week to learn Rust.

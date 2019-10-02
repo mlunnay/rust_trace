@@ -1,5 +1,7 @@
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
+use super::aabb::AABB;
+use super::vec::Vec3;
 
 pub struct HittableList {
     pub objects: Vec<Box<dyn Hittable>>
@@ -32,5 +34,20 @@ impl Hittable for HittableList {
             }
         }
         hit
+    }
+
+    fn bounding_box(&self) -> Option<AABB> {
+        if self.objects.len() == 1 { return None; }
+        let mut result = AABB::new(Vec3::new(std::f64::MAX, std::f64::MAX, std::f64::MAX), Vec3::new(std::f64::MIN, std::f64::MIN, std::f64::MIN));
+        for object in &self.objects {
+            if let Some(obj) = object.bounding_box() {
+                result = AABB::merge(&result, &obj);
+            }
+            else {
+                return None;
+            }
+        }
+
+        Some(result)
     }
 }
