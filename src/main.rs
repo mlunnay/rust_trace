@@ -11,7 +11,8 @@ use std::time::{Duration, Instant};
 use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
-use scenes::texture::Scene;
+//use scenes::texture::Scene;
+use scenes::marble::Scene;
 
 fn main() {
     let start = Instant::now();

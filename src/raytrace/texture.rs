@@ -1,5 +1,6 @@
 use super::vec::Vec3;
 use std::rc::Rc;
+use noise::{NoiseFn, Fbm};
 
 pub trait Texture {
     fn value(&self, u: f64, v: f64, p: Vec3) -> Vec3;
@@ -43,3 +44,21 @@ impl Texture for CheckerTexture {
         }
     }
 }
+
+pub struct MarbleTexture {
+    pub scale: f64,
+    fbm: Fbm
+}
+
+impl MarbleTexture {
+    pub fn new(scale: f64) -> Self {
+        MarbleTexture{scale, fbm: Fbm::new()}
+    }
+}
+
+impl Texture for MarbleTexture {
+    fn value(&self, _u: f64, _v: f64, p: Vec3) -> Vec3 {
+        Vec3::new(1.0, 1.0, 1.0) * 0.5 * (1.0 + (self.scale * p.z + 10.0 * self.fbm.get(p.elements())).sin())
+    }
+}
+

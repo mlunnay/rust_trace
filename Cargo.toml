@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 rand = "0.7.2"
 png = "0.15.0"
+noise = "0.6.0"
