@@ -5,12 +5,13 @@ pub mod scenes;
 
 use raytrace::camera::Camera;
 use raytrace::vec::Vec3;
-use scenes::rtiw_final::Scene;
+// use scenes::rtiw_final::Scene;
 use raytrace::util::drand48;
 use std::time::{Duration, Instant};
 use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
+use scenes::texture::Scene;
 
 fn main() {
     let start = Instant::now();
@@ -22,11 +23,11 @@ fn main() {
         Vec3::new(0.0, 1.0, 0.0),
         20.0,
         width as f64 / height as f64,
-        0.1,
+        0.0,
         8.4
     );
     
-    let scene = Scene::new(width, height, 100, camera);
+    let scene = Scene::new(width, height, 10, camera);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
 

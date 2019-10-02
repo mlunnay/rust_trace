@@ -8,12 +8,14 @@ pub struct HitRecord {
     pub t: f64,
     pub p: Vec3,
     pub normal: Vec3,
-    pub material: Rc<dyn Material>
+    pub material: Rc<dyn Material>,
+    pub u: f64,
+    pub v: f64
 }
 
 impl HitRecord {
-    pub fn new(t: f64, p: Vec3, normal: Vec3, material: Rc<dyn Material>) -> Self {
-        HitRecord{t, p, normal, material}
+    pub fn new(t: f64, p: Vec3, normal: Vec3, material: Rc<dyn Material>, u: f64, v: f64) -> Self {
+        HitRecord{t, p, normal, material, u, v}
     }
 }
 

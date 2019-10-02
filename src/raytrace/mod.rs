@@ -8,5 +8,6 @@ pub mod util;
 pub mod material;
 pub mod aabb;
 pub mod bvh;
+pub mod texture;
 
 pub const EPSILON:f64 = 1e-4;

@@ -7,7 +7,7 @@ use crate::raytrace::camera::Camera;
 use crate::raytrace::sphere::Sphere;
 use crate::raytrace::material::{Metal, Lambertian, Dielectric};
 use crate::raytrace::bvh::BVHNode;
-use crate::raytrace::texture::ConstantTexture;
+use crate::raytrace::texture::{ConstantTexture, CheckerTexture};
 
 pub struct Scene {
     pub width: u32,
@@ -25,7 +25,7 @@ impl Scene {
 
     pub fn generate() -> Vec<Box<dyn Hittable>> {
         let mut objects: Vec<Box<dyn Hittable>> = Vec::new();
-        objects.push(Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(0.5, 0.5, 0.5))))))));
+        objects.push(Box::new(Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Rc::new(Lambertian::new(Rc::new(CheckerTexture::new(Rc::new(ConstantTexture::new(Vec3::new(0.2, 0.3, 0.1))), Rc::new(ConstantTexture::new(Vec3::new(0.9, 0.9, 0.9))))))))));
 
         for a in -11..11 {
             for b in -11..11 {
