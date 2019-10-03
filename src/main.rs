@@ -5,14 +5,14 @@ pub mod scenes;
 
 use raytrace::camera::Camera;
 use raytrace::vec::Vec3;
-// use scenes::rtiw_final::Scene;
 use raytrace::util::drand48;
 use std::time::{Duration, Instant};
 use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
-//use scenes::texture::Scene;
-use scenes::marble::Scene;
+use raytrace::renderer::Renderer;
+use raytrace::bvh::BVHNode;
+use std::rc::Rc;
 
 fn main() {
     let start = Instant::now();
@@ -25,16 +25,18 @@ fn main() {
         20.0,
         width as f64 / height as f64,
         0.0,
-        8.4
+        10.0
     );
     
-    let scene = Scene::new(width, height, 10, camera);
+
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
+    let renderer = Renderer::new(width, height, 10, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
 
     for y in 0..height {
         for x in 0..width {
-            let color = scene.color_at((x as f64 + drand48()) / width as f64, (y as f64 + drand48()) / height as f64);
+            let color = renderer.color_at((x as f64 + drand48()) / width as f64, (y as f64 + drand48()) / height as f64);
             let r = (255.99 * color.x) as u8;
             let g = (255.99 * color.y) as u8;
             let b = (255.99 * color.z) as u8;
@@ -59,7 +61,7 @@ fn main() {
     writer.write_image_data(&data).unwrap(); // Save
 
     let elapsed = start.elapsed();
-    eprintln!("rendered {} x {} with {} samples in {}", width, height, scene.samples, human_readable_time(elapsed));
+    eprintln!("rendered {} x {} with {} samples in {}", width, height, renderer.samples, human_readable_time(elapsed));
 }
 
 const SECONDS_IN_HOUR: f64 = 3600.0;
