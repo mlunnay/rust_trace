@@ -62,3 +62,34 @@ impl Texture for MarbleTexture {
     }
 }
 
+pub struct ImageTexture {
+    data: Vec<u8>,
+    width: u32,
+    height: u32
+}
+
+impl ImageTexture {
+    pub fn new(data: Vec<u8>, width: u32, height: u32) -> Self {
+        ImageTexture{data, width, height}
+    }
+}
+
+impl Texture for ImageTexture {
+    fn value(&self, u: f64, v: f64, _p: Vec3) -> Vec3 {
+        let mut i = (u * self.width as f64) as usize;
+        let mut j = ((1.0 - v) * self.height as f64) as usize;
+        if i > self.width as usize - 1 {
+            i = self.width as usize - 1;
+        }
+        if j > self.height as usize - 1 {
+            j = self.height as usize - 1;
+        }
+
+        i *= 3;
+        j *= 3;
+        let r = self.data[i + self.width as usize * j] as f64 / 255.0;
+        let g = self.data[i + self.width as usize * j + 1] as f64 / 255.0;
+        let b = self.data[i + self.width as usize * j + 2] as f64 / 255.0;
+        Vec3::new(r, g, b)
+    }
+}

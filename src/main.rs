@@ -29,7 +29,8 @@ fn main() {
     );
     
 
-    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
+    // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::image_texture::generate())).unwrap());
     let renderer = Renderer::new(width, height, 10, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
