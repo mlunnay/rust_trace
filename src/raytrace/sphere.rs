@@ -33,7 +33,7 @@ impl Hittable for Sphere {
                 let (u,v) = get_sphere_uv((p - self.center) / self.radius);
                 return Some(HitRecord{
                     t: temp,
-                    p: p + super::EPSILON * normal,
+                    p: p /* + super::EPSILON * normal */,
                     normal: normal,
                     material: Rc::clone(&self.material),
                     u,
@@ -47,7 +47,7 @@ impl Hittable for Sphere {
                 let (u,v) = get_sphere_uv((p - self.center) / self.radius);
                 return Some(HitRecord{
                     t: temp,
-                    p: p + super::EPSILON * normal,
+                    p: p /* + super::EPSILON * normal */,
                     normal: normal,
                     material: Rc::clone(&self.material),
                     u,

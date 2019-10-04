@@ -34,17 +34,20 @@ impl Renderer {
 
     fn color_from_ray(&self, ray: Ray, depth: u32) -> Vec3 {
         match self.objects.hit(ray, 0.0, std::f64::MAX) {
-            Some(rec) => {
-                //return 0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0);
+            Some(mut rec) => {
+                rec.p = rec.p + super::EPSILON * rec.normal;
+                // return 0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0);
+                let emitted = rec.material.emitted(rec.u, rec.v, rec.p);
+                let emitted = Vec3::new(0.0, 0.0, 0.0);
                 if depth >= 50 {
-                    Vec3::new(0.0, 0.0, 0.0)
+                    return emitted;
                 }
                 else if let Some((scattered, attenuation)) = rec.material.scatter(&ray, &rec) {
-                    let ray = Ray::new(scattered.origin, scattered.direction);
-                    attenuation * self.color_from_ray(ray, depth + 1)
+                    let ray = Ray::new(scattered.origin + super::EPSILON * rec.normal, scattered.direction);
+                    return emitted + attenuation * self.color_from_ray(ray, depth + 1)
                 }
                 else {
-                    Vec3::new(0.0, 0.0, 0.0)
+                    emitted
                 }
             }
             None => {

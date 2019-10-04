@@ -37,6 +37,11 @@ pub fn radians_to_degrees(radians: f64) -> f64 {
     radians / PI_DIV_180
 }
 
+#[inline(always)]
+pub fn approx_equal(a: f64, b: f64) -> bool {
+    (a - b).abs() <= std::f64::EPSILON * a.max(b).max(1.0)
+}
+
 #[cfg(test)]
 mod tests {
     #[test]

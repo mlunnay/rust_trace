@@ -30,7 +30,8 @@ pub fn generate() -> Vec<Box<dyn Hittable>> {
 
     objects.push(Box::new(Sphere::new(Vec3::new(0.0, 1.0, 0.0), 1.0, Rc::new(Dielectric::new(1.5)))));
     objects.push(Box::new(Sphere::new(Vec3::new(-4.0, 1.0, 0.0), 1.0, Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(0.4, 0.2, 0.1))))))));
-    objects.push(Box::new(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, Rc::new(Metal::new(Rc::new(ConstantTexture::new(Vec3::new(0.7, 0.6, 0.5))), 0.0)))));
+    // objects.push(Box::new(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, Rc::new(Metal::new(Rc::new(ConstantTexture::new(Vec3::new(0.7, 0.6, 0.5))), 0.0)))));
+    objects.push(Box::new(Sphere::new(Vec3::new(4.0, 1.0, 0.0), 1.0, Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(0.4, 0.2, 0.1))))))));
 
     objects
 }

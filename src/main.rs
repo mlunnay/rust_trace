@@ -16,8 +16,8 @@ use std::rc::Rc;
 
 fn main() {
     let start = Instant::now();
-    let width = 800;
-    let height = 600;
+    let width = 1200;
+    let height = 800;
     let camera = Camera::new(
         Vec3::new(7.0, 2.0, 2.0),
         Vec3::new(0.0, 0.0, 0.0),
@@ -27,13 +27,16 @@ fn main() {
         0.0,
         10.0
     );
-    
 
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
-    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::image_texture::generate())).unwrap());
+    // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::image_texture::generate())).unwrap());
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::box_scene::generate())).unwrap());
     let renderer = Renderer::new(width, height, 10, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
+
+    // renderer.color_at(0.5, 0.6);
+    // return;
 
     for y in 0..height {
         for x in 0..width {
