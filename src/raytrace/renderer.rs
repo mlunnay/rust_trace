@@ -20,8 +20,8 @@ impl Renderer {
     pub fn color_at(&self, u: f64, v: f64) -> Vec3 {
         let mut col = Vec3::new(0.0, 0.0, 0.0);
         for _s in 0..self.samples {
-            let u = u + drand48() / self.width as f64;
-            let v = v + drand48() / self.height as f64;
+            let u = (u + drand48()) / self.width as f64;
+            let v = (v + drand48()) / self.height as f64;
             let r = self.camera.get_ray(u, v);
             col += self.color_from_ray(r, 0);
         }
@@ -36,7 +36,6 @@ impl Renderer {
         match self.objects.hit(ray, 0.0, std::f64::MAX) {
             Some(mut rec) => {
                 rec.p = rec.p + super::EPSILON * rec.normal;
-                // return 0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0);
                 let emitted = rec.material.emitted(rec.u, rec.v, rec.p);
                 let material = &rec.material;
                 if depth >= 50 {
@@ -51,7 +50,7 @@ impl Renderer {
                 }
             }
             None => {
-                Vec3::new(0.0, 0.0, 0.0)
+                Vec3::new(1.0, 1.0, 1.0)
             }
         }
     }

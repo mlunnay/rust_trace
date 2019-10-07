@@ -13,16 +13,17 @@ use std::io::BufWriter;
 use raytrace::renderer::Renderer;
 use raytrace::bvh::BVHNode;
 use std::rc::Rc;
+use raytrace::util::degrees_to_radians;
 
 fn main() {
     let start = Instant::now();
-    let width = 1200;
+    let width = 800;
     let height = 800;
     let camera = Camera::new(
-        Vec3::new(7.0, 2.0, 2.0),
+        Vec3::new(13.0, 2.0, 3.0),
         Vec3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
-        20.0,
+        degrees_to_radians(20.0),
         width as f64 / height as f64,
         0.0,
         10.0
@@ -31,8 +32,10 @@ fn main() {
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::image_texture::generate())).unwrap());
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::box_scene::generate())).unwrap());
-    let camera = scenes::emitting_scene::camera(width, height);
-    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::emitting_scene::generate())).unwrap());
+    // let camera = scenes::emitting_scene::camera(width, height);
+    // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::emitting_scene::generate())).unwrap());
+    let camera = scenes::cornell_box::camera(width as f64 /  height as f64);
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::cornell_box::generate())).unwrap());
     let renderer = Renderer::new(width, height, 10, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
@@ -42,7 +45,7 @@ fn main() {
 
     for y in 0..height {
         for x in 0..width {
-            let color = renderer.color_at((x as f64 + drand48()) / width as f64, (y as f64 + drand48()) / height as f64);
+            let color = renderer.color_at(x as f64, y as f64);
             let r = (255.99 * color.x) as u8;
             let g = (255.99 * color.y) as u8;
             let b = (255.99 * color.z) as u8;
@@ -53,6 +56,8 @@ fn main() {
             data[i + 3] = 255;
         }
     }
+
+    println!("{}", renderer.color_at(694.0, 550.0));
 
     // write image to png
     let path = Path::new("./image.png");
