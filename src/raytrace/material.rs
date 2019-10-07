@@ -28,7 +28,6 @@ impl Lambertian {
 impl Material for Lambertian {
     fn scatter(&self, _ray_in: &Ray, hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
         let target: Vec3 = hit_record.p + hit_record.normal + random_in_unit_sphere();
-        // let scattered = ray!(hit_record.p, hit_record.normal, target - hit_record.p);
         let scattered = Ray::new(hit_record.p, target - hit_record.p);
         let albedo = self.albedo.value(hit_record.u, hit_record.v, hit_record.p);
         Some((scattered, albedo))
@@ -109,11 +108,6 @@ impl Material for Dielectric {
         else {
             scattered = Ray::new(hit_record.p - 2.0 * super::EPSILON * outward_normal, refracted);
         }
-        
-        // let mut hr = hit_record.clone();
-        // (*hit_record).normal = outward_normal;
-
-        
 
         Some((scattered, attenuation))
     }
