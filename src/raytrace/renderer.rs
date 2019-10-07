@@ -38,11 +38,11 @@ impl Renderer {
                 rec.p = rec.p + super::EPSILON * rec.normal;
                 // return 0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0);
                 let emitted = rec.material.emitted(rec.u, rec.v, rec.p);
-                let emitted = Vec3::new(0.0, 0.0, 0.0);
+                let material = &rec.material;
                 if depth >= 50 {
                     return emitted;
                 }
-                else if let Some((scattered, attenuation)) = rec.material.scatter(&ray, &rec) {
+                else if let Some((scattered, attenuation)) = material.scatter(&ray, &rec) {
                     let ray = Ray::new(scattered.origin + super::EPSILON * rec.normal, scattered.direction);
                     return emitted + attenuation * self.color_from_ray(ray, depth + 1)
                 }
@@ -51,9 +51,7 @@ impl Renderer {
                 }
             }
             None => {
-                let unit_direction = ray.direction.normalize();
-                let t = 0.5 * (unit_direction.y + 1.0);
-                (1.0-t) * Vec3::new(1.0, 1.0, 1.0) + t*Vec3::new(0.5, 0.7, 1.0)
+                Vec3::new(0.0, 0.0, 0.0)
             }
         }
     }

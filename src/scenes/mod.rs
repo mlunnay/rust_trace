@@ -3,3 +3,4 @@ pub mod texture;
 pub mod marble;
 pub mod image_texture;
 pub mod box_scene;
+pub mod emitting_scene;

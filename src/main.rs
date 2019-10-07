@@ -30,7 +30,9 @@ fn main() {
 
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::rtiw_final::generate())).unwrap());
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::image_texture::generate())).unwrap());
-    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::box_scene::generate())).unwrap());
+    // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::box_scene::generate())).unwrap());
+    let camera = scenes::emitting_scene::camera(width, height);
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::emitting_scene::generate())).unwrap());
     let renderer = Renderer::new(width, height, 10, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
