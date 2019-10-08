@@ -10,6 +10,8 @@ pub mod aabb;
 pub mod bvh;
 pub mod texture;
 pub mod renderer;
-pub mod box_obj;
+pub mod cuboid;
+pub mod modify;
+pub mod quaternion;
 
 pub const EPSILON:f64 = 1e-4;

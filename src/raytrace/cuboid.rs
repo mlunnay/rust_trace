@@ -5,19 +5,19 @@ use super::hittable::*;
 use super::material::Material;
 use std::rc::Rc;
 
-pub struct Box {
+pub struct Cuboid {
     min: Vec3,
     max: Vec3,
     material: Rc::<dyn Material>
 }
 
-impl Box {
+impl Cuboid {
     pub fn new(min: Vec3, max: Vec3, material: Rc::<dyn Material>) -> Self {
         Self{min, max, material}
     }
 }
 
-impl Hittable for Box {
+impl Hittable for Cuboid {
     fn hit(&self, ray: Ray, _t_min: f64, _t_max: f64) -> Option<HitRecord> {
         let inv_d = 1.0 / ray.direction.x;
         let t0 = (self.min.x - ray.origin.x) * inv_d;
@@ -62,7 +62,7 @@ impl Hittable for Box {
         let t_min = t0.min(t1).max(t2.min(t3)).max(t4.min(t5));
         let t_max = t0.max(t1).min(t2.max(t3)).min(t4.max(t5));
 
-        // box is completely behind camera or complete miss
+        // Cuboid is completely behind camera or complete miss
         if t_max < 0.0 || t_min > t_max {
             return None;
         }
