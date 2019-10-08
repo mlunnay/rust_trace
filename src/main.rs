@@ -71,9 +71,6 @@ fn main() {
 
     let elapsed = start.elapsed();
     eprintln!("rendered {} x {} with {} samples in {}", width, height, renderer.samples, human_readable_time(elapsed));
-
-    let q = raytrace::quaternion::Quaternion::from_sv(degrees_to_radians(180.0), Vec3::new(0.0, 1.0, 0.0));
-    eprintln!("{}", q * Vec3::new(1.0, 0.0, 0.0));
 }
 
 const SECONDS_IN_HOUR: f64 = 3600.0;
