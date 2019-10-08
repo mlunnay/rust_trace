@@ -11,7 +11,7 @@ pub fn random_in_unit_sphere() -> Vec3 {
     let mut p: Vec3;
     while {
         p = 2.0 * Vec3{x: drand48(), y: drand48(), z: drand48()} - Vec3{x: 1.0, y: 1.0, z: 1.0};
-        p.length_sqared() >= 1.0
+        p.length_squared() >= 1.0
     }{}
     p
 }

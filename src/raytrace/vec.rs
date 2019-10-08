@@ -1,4 +1,5 @@
 use core::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign, Neg};
+use super::util::approx_equal;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
@@ -7,17 +8,36 @@ pub struct Vec3 {
     pub z: f64,
 }
 
-
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3{x: x, y: y, z: z}
+    }
+
+    /// Creates an empty Vec3
+    pub fn zero() -> Vec3 {
+        Vec3{x: 0.0, y: 0.0, z: 0.0}
+    }
+
+    /// Creates a Vector representing the x axis.
+    pub fn unit_x() -> Vec3 {
+        Vec3{x: 1.0, y: 0.0, z: 0.0}
+    }
+
+    /// Creates a Vector representing the xyaxis.
+    pub fn unit_y() -> Vec3 {
+        Vec3{x: 0.0, y: 1.0, z: 0.0}
+    }
+
+    /// Creates a Vector representing the z axis.
+    pub fn unit_z() -> Vec3 {
+        Vec3{x: 0.0, y: 0.0, z: 1.0}
     }
 
     pub fn length(&self) -> f64 {
         f64::sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
     }
 
-    pub fn length_sqared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
@@ -48,6 +68,11 @@ impl Vec3 {
             z: v1.x * v2.y - v1.y * v2.x
         }
     }
+
+    pub fn is_zero_length(self) -> bool {
+        let length = self.x * self.x + self.y * self.y + self.z * self.z;
+        approx_equal(length, 0.0)
+    }
 }
 
 impl core::fmt::Display for Vec3 {
@@ -69,6 +94,12 @@ impl Neg for Vec3 {
 
     fn neg(self) -> Vec3 {
         Vec3{x: -self.x, y: -self.y, z: -self.z}
+    }
+}
+
+impl std::cmp::PartialEq for Vec3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.z == other.z
     }
 }
 
@@ -241,7 +272,7 @@ mod tests {
     #[test]
     fn length_squared() {
         let v = Vec3::new(1.0, 4.0, 2.0);
-        assert_eq!(v.length_sqared(), 21.0);
+        assert_eq!(v.length_squared(), 21.0);
     }
 
     #[test]

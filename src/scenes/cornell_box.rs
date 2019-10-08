@@ -6,6 +6,7 @@ use crate::raytrace::material::{Lambertian, DiffuseLight};
 use crate::raytrace::texture::ConstantTexture;
 use crate::raytrace::camera::Camera;
 use crate::raytrace::util::degrees_to_radians;
+use crate::raytrace::modify::{Translate, RotateY};
 
 pub fn camera(aspect: f64) -> Camera {
     Camera::new(
@@ -30,6 +31,12 @@ pub fn generate() -> Vec<Box<dyn Hittable>> {
     objects.push(Box::new(Cuboid::new(Vec3::new(0.0, 555.0, 0.0), Vec3::new(555.0, 555.1, 555.0), white.clone())));
     objects.push(Box::new(Cuboid::new(Vec3::new(0.0, -0.1, 0.0), Vec3::new(555.0, 0.0, 555.0), white.clone())));
     objects.push(Box::new(Cuboid::new(Vec3::new(213.0, 554.8, 227.0), Vec3::new(343.0, 554.9, 332.0), Rc::new(DiffuseLight::new(Rc::new(ConstantTexture::new(Vec3::new(15.0, 15.0, 15.0))))))));
+
+    let cuboid = Rc::new(Cuboid::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(165.0, 165.0, 165.0), white.clone()));
+    objects.push(Box::new(Translate::new(Rc::new(RotateY::new(cuboid, degrees_to_radians(18.0))), Vec3::new(130.0, 0.0, 65.0))));
+
+    let cuboid = Rc::new(Cuboid::new(Vec3::new(0.0, 0.0, 0.0), Vec3::new(165.0, 330.0, 165.0), white.clone()));
+    objects.push(Box::new(Translate::new(Rc::new(RotateY::new(cuboid, degrees_to_radians(-15.0))), Vec3::new(265.0, 0.0, 295.0))));
 
     objects
 }

@@ -67,4 +67,17 @@ impl AABB {
         };
         Self { min, max }
     }
+
+    pub fn get_corners(self) -> [Vec3; 8] {
+        let mut vectors: [Vec3; 8] = [Vec3::zero(); 8];
+        vectors[0] = Vec3{x: self.min.x, y: self.min.y, z: self.min.z};
+        vectors[1] = Vec3{x: self.min.x, y: self.min.y, z: self.max.z};
+        vectors[2] = Vec3{x: self.min.x, y: self.max.y, z: self.min.z};
+        vectors[3] = Vec3{x: self.min.x, y: self.max.y, z: self.max.z};
+        vectors[4] = Vec3{x: self.max.x, y: self.min.y, z: self.min.z};
+        vectors[5] = Vec3{x: self.max.x, y: self.min.y, z: self.max.z};
+        vectors[6] = Vec3{x: self.max.x, y: self.max.y, z: self.min.z};
+        vectors[7] = Vec3{x: self.max.x, y: self.max.y, z: self.max.z};
+        vectors
+    }
 }
