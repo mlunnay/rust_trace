@@ -45,7 +45,8 @@ pub trait Rotation: Hittable {
 
     fn hit(&self, r: Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let q = Self::rotation(self);
-        let rotated_ray = Ray::new(q * r.origin, q * r.direction);
+        let qr = q.conjugate();
+        let rotated_ray = Ray::new(qr * r.origin, qr * r.direction);
         match Self::object(self).hit(rotated_ray, t_min, t_max) {
             Some(rec) => {
                 let p = q * rec.p;
