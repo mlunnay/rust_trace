@@ -34,8 +34,7 @@ impl Renderer {
 
     fn color_from_ray(&self, ray: Ray, depth: u32) -> Vec3 {
         match self.objects.hit(ray, 0.0, std::f64::MAX) {
-            Some(mut rec) => {
-                rec.p = rec.p + super::EPSILON * rec.normal;
+            Some(rec) => {
                 let emitted = rec.material.emitted(rec.u, rec.v, rec.p);
                 let material = &rec.material;
                 if depth >= 50 {
