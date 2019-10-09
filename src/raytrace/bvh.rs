@@ -30,7 +30,8 @@ impl BVHNode {
             0 => panic!("hittable_list is an empty vector"),
             1 => {
                 let left: Rc<dyn Hittable> = Rc::from(hittable_list.remove(0));
-                Rc::new(BVHNode{bbox: left.required_bounding_box(), left: Rc::clone(&left), right: Rc::clone(&left)})
+                let right = Rc::new(Empty{});
+                Rc::new(BVHNode{bbox: left.required_bounding_box(), left: Rc::clone(&left), right: right})
             }
             2 => {
                 let left: Rc<dyn Hittable> = Rc::from(hittable_list.remove(0));
@@ -84,5 +85,17 @@ impl Hittable for BVHNode {
 impl std::fmt::Debug for BVHNode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "BVHNode")
+    }
+}
+
+struct Empty {}
+
+impl Hittable for Empty {
+    fn hit(&self, _r: Ray, _t_min: f64, _t_max: f64) -> Option<HitRecord> {
+        None
+    }
+
+    fn bounding_box(&self) -> Option<AABB> {
+        None
     }
 }
