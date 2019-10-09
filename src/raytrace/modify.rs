@@ -141,12 +141,6 @@ macro_rules! impl_hittable {
 
 macro_rules! impl_axis_rotation {
     ($op: ident, $axis: expr) => {
-        pub struct $op {
-            _rotation: Quaternion,
-            _object: Rc<dyn Hittable>,
-            _bounding_box: Option<AABB>
-        }
-
         impl $op {
             pub fn new(object: Rc<dyn Hittable>, angle: f64) -> RotateY {
                 let q = Quaternion::from_rotation_axis($axis, angle);
@@ -200,14 +194,29 @@ impl Rotate {
 impl_hittable!(Rotate);
 impl_rotation!(Rotate);
 
+pub struct RotateX {
+    _rotation: Quaternion,
+    _object: Rc<dyn Hittable>,
+    _bounding_box: Option<AABB>
+}
 impl_axis_rotation!(RotateX, Vec3::unit_x());
 impl_rotation!(RotateX);
 impl_hittable!(RotateX);
 
+pub struct RotateY {
+    _rotation: Quaternion,
+    _object: Rc<dyn Hittable>,
+    _bounding_box: Option<AABB>
+}
 impl_axis_rotation!(RotateY, Vec3::unit_y());
 impl_rotation!(RotateY);
 impl_hittable!(RotateY);
 
+pub struct RotateZ {
+    _rotation: Quaternion,
+    _object: Rc<dyn Hittable>,
+    _bounding_box: Option<AABB>
+}
 impl_axis_rotation!(RotateZ, Vec3::unit_z());
 impl_rotation!(RotateZ);
 impl_hittable!(RotateZ);
