@@ -3,18 +3,22 @@ use crate::raytrace::hittable::Hittable;
 use crate::raytrace::ray::Ray;
 use crate::raytrace::vec::Vec3;
 use crate::raytrace::camera::Camera;
+use std::rc::Rc;
+
+pub type BgFunc = Rc<dyn Fn(Ray) -> Vec3>;
 
 pub struct Renderer {
     pub width: u32,
     pub height: u32,
     pub samples: u32,
-    objects: Box<dyn Hittable>,
-    camera: Camera
+    objects: Rc<dyn Hittable>,
+    camera: Camera,
+    background: Option<BgFunc>
 }
 
 impl Renderer {
-    pub fn new(width: u32, height: u32, samples: u32, camera: Camera, objects: Box<dyn Hittable>) -> Self {
-        Renderer{ width, height, samples, objects, camera }
+    pub fn new(width: u32, height: u32, samples: u32, camera: Camera, objects: Rc<dyn Hittable>, background: Option<BgFunc>) -> Self {
+        Renderer{ width, height, samples, objects, camera, background }
     }
 
     pub fn color_at(&self, u: f64, v: f64) -> Vec3 {
@@ -46,7 +50,10 @@ impl Renderer {
                 }
             }
             None => {
-                Vec3::new(0.0, 0.0, 0.0)
+                match &self.background {
+                    Some(bg) => bg(ray), 
+                    None => Vec3::new(0.0, 0.0, 0.0)
+                }
             }
         }
     }
