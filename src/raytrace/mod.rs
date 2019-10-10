@@ -13,5 +13,6 @@ pub mod renderer;
 pub mod cuboid;
 pub mod modify;
 pub mod quaternion;
+pub mod constant_medium;
 
 pub const EPSILON:f64 = 1e-4;

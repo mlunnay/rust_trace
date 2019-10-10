@@ -5,7 +5,6 @@ pub mod scenes;
 
 use raytrace::camera::Camera;
 use raytrace::vec::Vec3;
-use raytrace::util::drand48;
 use std::time::{Duration, Instant};
 use std::path::Path;
 use std::fs::File;
@@ -34,18 +33,20 @@ fn main() {
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::box_scene::generate())).unwrap());
     // let camera = scenes::emitting_scene::camera(width, height);
     // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::emitting_scene::generate())).unwrap());
-    let camera = scenes::cornell_box::camera(width as f64 /  height as f64);
-    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::cornell_box::generate())).unwrap());
-    let renderer = Renderer::new(width, height, 10, camera, objects);
+    // let camera = scenes::cornell_box::camera(width as f64 /  height as f64);
+    // let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::cornell_box::generate())).unwrap());
+    let camera = scenes::cornell_smoke::camera(width as f64 /  height as f64);
+    let objects = Box::new(Rc::try_unwrap(BVHNode::construct(scenes::cornell_smoke::generate())).unwrap());
+    let renderer = Renderer::new(width, height, 100, camera, objects);
 
     let mut data: Vec<u8> = vec![0; (width * height * 4) as usize];
 
-    // renderer.color_at(0.5, 0.6);
-    // return;
-
     for y in 0..height {
         for x in 0..width {
-            let color = renderer.color_at(x as f64, y as f64);
+            let mut color = renderer.color_at(x as f64, y as f64);
+            color.x = f64::sqrt(color.x);
+            color.y = f64::sqrt(color.y);
+            color.z = f64::sqrt(color.z);
             let r = (255.99 * color.x) as u8;
             let g = (255.99 * color.y) as u8;
             let b = (255.99 * color.z) as u8;

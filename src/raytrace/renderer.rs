@@ -26,9 +26,6 @@ impl Renderer {
             col += self.color_from_ray(r, 0);
         }
         col /= self.samples as f64;
-        col.x = f64::sqrt(col.x);
-        col.y = f64::sqrt(col.y);
-        col.z = f64::sqrt(col.z);
         col
     }
 
@@ -49,7 +46,7 @@ impl Renderer {
                 }
             }
             None => {
-                Vec3::new(1.0, 1.0, 1.0)
+                Vec3::new(0.0, 0.0, 0.0)
             }
         }
     }

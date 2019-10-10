@@ -2,6 +2,7 @@ use super::vec::Vec3;
 use super::ray::Ray;
 use super::util::random_in_unit_disk;
 
+#[derive(Clone, Copy)]
 pub struct Camera {
     pub origin: Vec3,
     pub lower_left_corner: Vec3,

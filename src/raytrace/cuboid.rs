@@ -18,7 +18,7 @@ impl Cuboid {
 }
 
 impl Hittable for Cuboid {
-    fn hit(&self, ray: Ray, _t_min: f64, _t_max: f64) -> Option<HitRecord> {
+    fn hit(&self, ray: Ray, bt_min: f64, bt_max: f64) -> Option<HitRecord> {
         let inv_d = 1.0 / ray.direction.x;
         let t0 = (self.min.x - ray.origin.x) * inv_d;
         let t1 = (self.max.x - ray.origin.x) * inv_d;
@@ -66,9 +66,11 @@ impl Hittable for Cuboid {
         if t_max < 0.0 || t_min > t_max {
             return None;
         }
-
-        let t = if t_min < 0.0 { return None; /* t_max */ } else { t_min };
-
+        
+        let t = if t_min < bt_min { t_max } else { t_min };
+        if t > bt_max {
+            return None;
+        }
         let u: f64;
         let v: f64;
         let point = ray.point_at_parameter(t);
@@ -103,7 +105,7 @@ impl Hittable for Cuboid {
                 Vec3::new(0.0, 0.0, 1.0)
             }
             else { panic!("t should match one of the previous values") };
-
+        
         Some(HitRecord::new(
             t,
             ray.point_at_parameter(t),
