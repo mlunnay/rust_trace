@@ -69,7 +69,7 @@ fn main() {
         objects: BVHNode::construct(scenes::cornell_box::generate()),
         background: None
     });
-    scenes.insert("cornell_box", Scene{
+    scenes.insert("cornell_smoke", Scene{
         camera: Some(scenes::cornell_smoke::camera(width as f64 /  height as f64)),
         objects: BVHNode::construct(scenes::cornell_smoke::generate()),
         background: None
