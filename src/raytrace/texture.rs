@@ -1,8 +1,8 @@
 use super::vec::Vec3;
-use std::rc::Rc;
+use std::sync::Arc;
 use noise::{NoiseFn, Fbm};
 
-pub trait Texture {
+pub trait Texture: Send + Sync {
     fn value(&self, u: f64, v: f64, p: Vec3) -> Vec3;
 }
 
@@ -23,12 +23,12 @@ impl Texture for ConstantTexture {
 }
 
 pub struct CheckerTexture {
-    pub odd: Rc<dyn Texture>,
-    pub even: Rc<dyn Texture>
+    pub odd: Arc<dyn Texture>,
+    pub even: Arc<dyn Texture>
 }
 
 impl CheckerTexture {
-    pub fn new(odd: Rc<dyn Texture>, even: Rc<dyn Texture>) -> Self {
+    pub fn new(odd: Arc<dyn Texture>, even: Arc<dyn Texture>) -> Self {
         CheckerTexture{odd, even}
     }
 }

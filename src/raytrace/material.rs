@@ -3,9 +3,9 @@ use super::vec::Vec3;
 use super::hittable::HitRecord;
 use super::util::{random_in_unit_sphere, drand48};
 use super::texture::Texture;
-use std::rc::Rc;
+use std::sync::Arc;
 
-pub trait Material {
+pub trait Material: Send + Sync {
     fn scatter(&self, _ray_in: &Ray, _hit_record: &HitRecord) -> Option<(Ray, Vec3)> {
         None
     }
@@ -16,11 +16,11 @@ pub trait Material {
 }
 
 pub struct Lambertian {
-    albedo: Rc<dyn Texture>
+    albedo: Arc<dyn Texture>
 }
 
 impl Lambertian {
-    pub fn new(albedo: Rc<dyn Texture>) -> Self {
+    pub fn new(albedo: Arc<dyn Texture>) -> Self {
         Lambertian{ albedo }
     }
 }
@@ -35,12 +35,12 @@ impl Material for Lambertian {
 }
 
 pub struct Metal {
-    pub albedo: Rc<dyn Texture>,
+    pub albedo: Arc<dyn Texture>,
     pub roughness: f64
 }
 
 impl Metal {
-    pub fn new(albedo: Rc<dyn Texture>, roughness: f64) -> Self {
+    pub fn new(albedo: Arc<dyn Texture>, roughness: f64) -> Self {
         Metal{ albedo, roughness: f64::min(roughness, 1.0) }
     }
 }
@@ -114,11 +114,11 @@ impl Material for Dielectric {
 }
 
 pub struct DiffuseLight {
-    emit: Rc<dyn Texture>
+    emit: Arc<dyn Texture>
 }
 
 impl DiffuseLight {
-    pub fn new(emit: Rc<dyn Texture>) -> Self {
+    pub fn new(emit: Arc<dyn Texture>) -> Self {
         DiffuseLight{emit}
     }
 }
@@ -130,11 +130,11 @@ impl Material for DiffuseLight {
 }
 
 pub struct Isotropic {
-    albedo: Rc<dyn Texture>
+    albedo: Arc<dyn Texture>
 }
 
 impl Isotropic {
-    pub fn new(albedo: Rc<dyn Texture>) -> Isotropic {
+    pub fn new(albedo: Arc<dyn Texture>) -> Isotropic {
         Isotropic{albedo}
     }
 }

@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::rc::Rc;
+use std::sync::Arc;
 use crate::raytrace::hittable::Hittable;
 use crate::raytrace::texture::ImageTexture;
 use crate::raytrace::material::Lambertian;
@@ -19,7 +19,7 @@ pub fn generate() -> Vec<Box<dyn Hittable>> {
     objects.push(Box::new(Sphere::new(
         Vec3::new(0.0, 2.0, 0.0),
         2.0,
-        Rc::new(Lambertian::new(Rc::new(image))),
+        Arc::new(Lambertian::new(Arc::new(image))),
     )));
 
     objects

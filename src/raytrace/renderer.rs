@@ -3,21 +3,37 @@ use crate::raytrace::hittable::Hittable;
 use crate::raytrace::ray::Ray;
 use crate::raytrace::vec::Vec3;
 use crate::raytrace::camera::Camera;
-use std::rc::Rc;
+use std::sync::Arc;
 
-pub type BgFunc = Rc<dyn Fn(Ray) -> Vec3>;
+pub type BgFunc = Box<dyn Fn(Ray) -> Vec3 + Send + Sync>;
 
-pub struct Renderer {
+pub trait Background: Send + Sync {
+    fn get(&self, ray: Ray) -> Vec3;
+}
+
+pub struct GradientBackground {}
+
+impl GradientBackground {}
+
+impl Background for GradientBackground {
+    fn get(&self, ray: Ray) -> Vec3 {
+        let unit_direction = ray.direction.normalize();
+        let t = 0.5 * (unit_direction.y + 1.0);
+        (1.0-t) * Vec3::new(1.0, 1.0, 1.0) + t*Vec3::new(0.5, 0.7, 1.0)
+    }
+}
+
+pub struct Renderer  {
     pub width: u32,
     pub height: u32,
     pub samples: u32,
-    objects: Rc<dyn Hittable>,
+    objects: Arc<dyn Hittable>,
     camera: Camera,
-    background: Option<BgFunc>
+    background: Option<Box<dyn Background>>
 }
 
 impl Renderer {
-    pub fn new(width: u32, height: u32, samples: u32, camera: Camera, objects: Rc<dyn Hittable>, background: Option<BgFunc>) -> Self {
+    pub fn new(width: u32, height: u32, samples: u32, camera: Camera, objects: Arc<dyn Hittable>, background: Option<Box<dyn Background>>) -> Self {
         Renderer{ width, height, samples, objects, camera, background }
     }
 
@@ -51,7 +67,7 @@ impl Renderer {
             }
             None => {
                 match &self.background {
-                    Some(bg) => bg(ray), 
+                    Some(bg) => bg.get(ray), 
                     None => Vec3::new(0.0, 0.0, 0.0)
                 }
             }

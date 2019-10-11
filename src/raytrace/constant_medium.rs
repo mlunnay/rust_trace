@@ -2,18 +2,18 @@ use super::util::drand48;
 use super::aabb::AABB;
 use super::hittable::{HitRecord, Hittable};
 use super::vec::Vec3;
-use std::rc::Rc;
+use std::sync::Arc;
 use super::material::Material;
 use super::ray::Ray;
 
 pub struct ConstantMedium {
-    boundary: Rc<dyn Hittable>,
+    boundary: Arc<dyn Hittable>,
     density: f64,
-    phase_function: Rc<dyn Material>
+    phase_function: Arc<dyn Material>
 }
 
 impl ConstantMedium {
-    pub fn new(boundary: Rc<dyn Hittable>, density: f64, phase_function: Rc<dyn Material>) -> ConstantMedium {
+    pub fn new(boundary: Arc<dyn Hittable>, density: f64, phase_function: Arc<dyn Material>) -> ConstantMedium {
         ConstantMedium{boundary, density, phase_function}
     }
 }

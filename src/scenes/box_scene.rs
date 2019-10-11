@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use std::fs::File;
 use crate::raytrace::hittable::Hittable;
 use crate::raytrace::vec::Vec3;
@@ -16,8 +16,8 @@ pub fn generate() -> Vec<Box<dyn Hittable>> {
 
     let image = ImageTexture::new(buf, info.width, info.height);
 
-    objects.push(Box::new(crate::raytrace::sphere::Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(0.5, 0.5, 0.5))))))));
-    objects.push(Box::new(Cuboid::new(Vec3::new(-1.5, 0.000001, -1.5), Vec3::new(1.5, 3.0, 1.5), Rc::new(Lambertian::new(Rc::new(image))))));
+    objects.push(Box::new(crate::raytrace::sphere::Sphere::new(Vec3::new(0.0, -1000.0, 0.0), 1000.0, Arc::new(Lambertian::new(Arc::new(ConstantTexture::new(Vec3::new(0.5, 0.5, 0.5))))))));
+    objects.push(Box::new(Cuboid::new(Vec3::new(-1.5, 0.000001, -1.5), Vec3::new(1.5, 3.0, 1.5), Arc::new(Lambertian::new(Arc::new(image))))));
 
     objects
 }

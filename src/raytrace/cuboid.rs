@@ -3,16 +3,16 @@ use super::ray::Ray;
 use super::aabb::AABB;
 use super::hittable::*;
 use super::material::Material;
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub struct Cuboid {
     min: Vec3,
     max: Vec3,
-    material: Rc::<dyn Material>
+    material: Arc::<dyn Material>
 }
 
 impl Cuboid {
-    pub fn new(min: Vec3, max: Vec3, material: Rc::<dyn Material>) -> Self {
+    pub fn new(min: Vec3, max: Vec3, material: Arc::<dyn Material>) -> Self {
         Self{min, max, material}
     }
 }
@@ -110,7 +110,7 @@ impl Hittable for Cuboid {
             t,
             ray.point_at_parameter(t),
             normal,
-            Rc::clone(&self.material),
+            Arc::clone(&self.material),
             u,
             v
         ))

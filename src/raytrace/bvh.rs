@@ -4,21 +4,21 @@ use super::aabb::AABB;
 use super::hittable::{Hittable, HitRecord};
 use super::ray::Ray;
 use rand::Rng;
-use std::rc::Rc;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct BVHNode {
-    left: Rc<dyn Hittable>,
-    right: Rc<dyn Hittable>,
+    left: Arc<dyn Hittable>,
+    right: Arc<dyn Hittable>,
     bbox: AABB
 }
 
 impl BVHNode {
-    pub fn new(bbox: AABB, left: Rc<dyn Hittable>, right: Rc<dyn Hittable>) -> Self {
+    pub fn new(bbox: AABB, left: Arc<dyn Hittable>, right: Arc<dyn Hittable>) -> Self {
         BVHNode{bbox, left, right}
     }
 
-    pub fn construct(mut hittable_list: Vec<Box<dyn Hittable>>) -> Rc<BVHNode> {
+    pub fn construct(mut hittable_list: Vec<Box<dyn Hittable>>) -> Arc<BVHNode> {
         let axis = rand::thread_rng().gen_range(0, 3);
         hittable_list.sort_by(|a,b| {
             let left = a.required_bounding_box().min;
@@ -29,16 +29,16 @@ impl BVHNode {
         match hittable_list.len() { 
             0 => panic!("hittable_list is an empty vector"),
             1 => {
-                let left: Rc<dyn Hittable> = Rc::from(hittable_list.remove(0));
-                let right = Rc::new(Empty{});
-                Rc::new(BVHNode{bbox: left.required_bounding_box(), left: Rc::clone(&left), right: right})
+                let left: Arc<dyn Hittable> = Arc::from(hittable_list.remove(0));
+                let right = Arc::new(Empty{});
+                Arc::new(BVHNode{bbox: left.required_bounding_box(), left: Arc::clone(&left), right: right})
             }
             2 => {
-                let left: Rc<dyn Hittable> = Rc::from(hittable_list.remove(0));
-                let right: Rc<dyn Hittable> = Rc::from(hittable_list.remove(0));
+                let left: Arc<dyn Hittable> = Arc::from(hittable_list.remove(0));
+                let right: Arc<dyn Hittable> = Arc::from(hittable_list.remove(0));
                 let bbox = AABB::merge(&left.required_bounding_box(), &right.required_bounding_box());
 
-                Rc::new(BVHNode{ bbox, left, right })
+                Arc::new(BVHNode{ bbox, left, right })
             }
             _ => {
                 let mut a = hittable_list;
@@ -47,7 +47,7 @@ impl BVHNode {
                 let right = BVHNode::construct(b);
                 let bbox = AABB::merge(&left.required_bounding_box(), &right.required_bounding_box());
 
-                Rc::new(BVHNode{ bbox, left: left, right: right })
+                Arc::new(BVHNode{ bbox, left: left, right: right })
             }
         }
     }

@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use super::vec::Vec3;
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
@@ -8,11 +8,11 @@ use super::aabb::AABB;
 pub struct Sphere {
     center: Vec3,
     radius: f64,
-    material: Rc<dyn Material>
+    material: Arc<dyn Material>
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, material: Rc<dyn Material>) -> Self {
+    pub fn new(center: Vec3, radius: f64, material: Arc<dyn Material>) -> Self {
         Sphere{center, radius, material}
     }
 }
@@ -35,7 +35,7 @@ impl Hittable for Sphere {
                     t: temp,
                     p: p /* + super::EPSILON * normal */,
                     normal: normal,
-                    material: Rc::clone(&self.material),
+                    material: Arc::clone(&self.material),
                     u,
                     v
                 });
@@ -49,7 +49,7 @@ impl Hittable for Sphere {
                     t: temp,
                     p: p /* + super::EPSILON * normal */,
                     normal: normal,
-                    material: Rc::clone(&self.material),
+                    material: Arc::clone(&self.material),
                     u,
                     v
                 });

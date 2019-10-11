@@ -5,15 +5,15 @@ use super::vec::Vec3;
 use super::ray::Ray;
 use super::quaternion::Quaternion;
 use super::hittable::{HitRecord, Hittable};
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub struct Translate {
-    object: Rc<dyn Hittable>,
+    object: Arc<dyn Hittable>,
     offset: Vec3
 }
 
 impl Translate {
-    pub fn new(object: Rc<dyn Hittable>, offset: Vec3) -> Self {
+    pub fn new(object: Arc<dyn Hittable>, offset: Vec3) -> Self {
         Translate{object, offset}
     }
 }
@@ -40,7 +40,7 @@ impl Hittable for Translate {
 
 pub trait Rotation: Hittable {
     fn rotation(&self) -> Quaternion;
-    fn object(&self) -> Rc<dyn Hittable>;
+    fn object(&self) -> Arc<dyn Hittable>;
     fn bbox(&self) -> Option<AABB>;
 
     fn hit(&self, r: Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
@@ -113,7 +113,7 @@ macro_rules! impl_rotation {
                 self._rotation
             }
 
-            fn object(&self) -> Rc<dyn Hittable> {
+            fn object(&self) -> Arc<dyn Hittable> {
                 self._object.clone()
             }
 
@@ -143,7 +143,7 @@ macro_rules! impl_hittable {
 macro_rules! impl_axis_rotation {
     ($op: ident, $axis: expr) => {
         impl $op {
-            pub fn new(object: Rc<dyn Hittable>, angle: f64) -> RotateY {
+            pub fn new(object: Arc<dyn Hittable>, angle: f64) -> RotateY {
                 let q = Quaternion::from_rotation_axis($axis, angle);
                 let boundingbox: Option<AABB> =  match object.bounding_box() {
                     Some(bbox) => Some(Self::rotate_bounding_box(q, bbox)),
@@ -163,13 +163,13 @@ macro_rules! impl_axis_rotation {
 }
 
 pub struct Rotate {
-    _object: Rc<dyn Hittable>,
+    _object: Arc<dyn Hittable>,
     _rotation: Quaternion,
     _bounding_box: Option<AABB>
 }
 
 impl Rotate {
-    pub fn new(object: Rc<dyn Hittable>, rotation: Quaternion) -> Rotate {
+    pub fn new(object: Arc<dyn Hittable>, rotation: Quaternion) -> Rotate {
         let boundingbox: Option<AABB> =  match object.bounding_box() {
             Some(bbox) => Some(Self::rotate_bounding_box(rotation, bbox)),
             None => None
@@ -197,7 +197,7 @@ impl_rotation!(Rotate);
 
 pub struct RotateX {
     _rotation: Quaternion,
-    _object: Rc<dyn Hittable>,
+    _object: Arc<dyn Hittable>,
     _bounding_box: Option<AABB>
 }
 impl_axis_rotation!(RotateX, Vec3::unit_x());
@@ -206,7 +206,7 @@ impl_hittable!(RotateX);
 
 pub struct RotateY {
     _rotation: Quaternion,
-    _object: Rc<dyn Hittable>,
+    _object: Arc<dyn Hittable>,
     _bounding_box: Option<AABB>
 }
 impl_axis_rotation!(RotateY, Vec3::unit_y());
@@ -215,7 +215,7 @@ impl_hittable!(RotateY);
 
 pub struct RotateZ {
     _rotation: Quaternion,
-    _object: Rc<dyn Hittable>,
+    _object: Arc<dyn Hittable>,
     _bounding_box: Option<AABB>
 }
 impl_axis_rotation!(RotateZ, Vec3::unit_z());
