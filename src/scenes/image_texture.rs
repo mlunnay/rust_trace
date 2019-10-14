@@ -4,7 +4,7 @@ use crate::raytrace::hittable::Hittable;
 use crate::raytrace::texture::ImageTexture;
 use crate::raytrace::material::Lambertian;
 use crate::raytrace::sphere::Sphere;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 
 pub fn generate() -> Vec<Box<dyn Hittable>> {
     let decoder = png::Decoder::new(File::open("earth.png").unwrap());

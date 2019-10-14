@@ -6,7 +6,7 @@ pub mod raytrace;
 pub mod scenes;
 
 use raytrace::camera::Camera;
-use raytrace::vec::Vec3;
+use raytrace::Vec3;
 use std::time::{Duration, Instant};
 use std::path::Path;
 use std::fs::File;
@@ -18,7 +18,6 @@ use raytrace::util::degrees_to_radians;
 use raytrace::hittable::Hittable;
 
 fn main() {
-    let start = Instant::now();
     let width = 800;
     let height = 800;
     let default_camera = Camera::new(
@@ -44,9 +43,11 @@ fn main() {
         _ => panic!("Invalid scene name")
     };  
 
-    let renderer = Renderer::new(width, height, 10, camera, objects, background);
+    let renderer = Renderer::new(width, height, 100, camera, objects, background);
 
     let mut data = vec![0u8; (width * height * 4) as usize];
+
+    let start = Instant::now();
 
     // for y in 0..height {
     //     for x in 0..width {
@@ -73,9 +74,9 @@ fn main() {
             for (i, rgba) in row.chunks_mut(4).enumerate() {
                 let color = renderer.color_at(i as f64, j as f64);
                 let mut iter = rgba.iter_mut();
-                *iter.next().unwrap() = (255.99 * color.x.sqrt()) as u8;
-                *iter.next().unwrap() = (255.99 * color.y.sqrt()) as u8;
-                *iter.next().unwrap() = (255.99 * color.z.sqrt()) as u8;
+                *iter.next().unwrap() = (255.99 * color.x().sqrt()) as u8;
+                *iter.next().unwrap() = (255.99 * color.y().sqrt()) as u8;
+                *iter.next().unwrap() = (255.99 * color.z().sqrt()) as u8;
                 *iter.next().unwrap() = 255;
             }
         });

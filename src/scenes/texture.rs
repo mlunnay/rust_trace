@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use crate::raytrace::util::drand48;
 use crate::raytrace::hittable::Hittable;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 use crate::raytrace::sphere::Sphere;
 use crate::raytrace::material::{Metal, Lambertian, Dielectric};
 use crate::raytrace::texture::{ConstantTexture, CheckerTexture};

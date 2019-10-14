@@ -1,7 +1,7 @@
 extern crate rand;
 use rand::Rng;
 
-use super::vec::Vec3;
+use super::Vec3;
 
 pub fn drand48() -> f64 {
     rand::thread_rng().gen()
@@ -10,7 +10,7 @@ pub fn drand48() -> f64 {
 pub fn random_in_unit_sphere() -> Vec3 {
     let mut p: Vec3;
     while {
-        p = 2.0 * Vec3{x: drand48(), y: drand48(), z: drand48()} - Vec3{x: 1.0, y: 1.0, z: 1.0};
+        p = 2.0 * Vec3::new(drand48(), drand48(), drand48()) - Vec3::new(1.0, 1.0, 1.0);
         p.length_squared() >= 1.0
     }{}
     p
@@ -19,8 +19,8 @@ pub fn random_in_unit_sphere() -> Vec3 {
 pub fn random_in_unit_disk() -> Vec3 {
     let mut p: Vec3;
     while {
-        p = 2.0 * Vec3{x: drand48(), y: drand48(), z: 0.0} - Vec3{x: 1.0, y: 1.0, z: 0.0};
-        Vec3::dot(&p, &p) >= 1.0
+        p = 2.0 * Vec3::new(drand48(), drand48(), 0.0) - Vec3::new(1.0, 1.0, 0.0);
+        Vec3::dot(p, p) >= 1.0
     }{}
     p
 }
@@ -59,4 +59,24 @@ mod tests {
     fn radians_to_degrees() {
         assert_eq!(super::radians_to_degrees(3.141592653589793), 180.0);
     }
+}
+
+#[repr(align(16))]
+pub(crate) struct Align16<T>(pub(crate) T);
+
+impl<T> Align16<T> {
+    #[allow(dead_code)]
+    pub fn as_ptr(&self) -> *const T {
+        &self.0
+    }
+
+    #[allow(dead_code)]
+    pub fn as_mut_ptr(&mut self) -> *mut T {
+        &mut self.0
+    }
+}
+
+#[inline]
+pub const fn mm_shuffle(z: u32, y: u32, x: u32, w: u32) -> i32 {
+    ((z << 6) | (y << 4) | (x << 2) | w) as i32
 }

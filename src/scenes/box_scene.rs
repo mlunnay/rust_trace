@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use std::fs::File;
 use crate::raytrace::hittable::Hittable;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 use crate::raytrace::cuboid::Cuboid;
 use crate::raytrace::material::Lambertian;
 use crate::raytrace::texture::{ConstantTexture, ImageTexture};

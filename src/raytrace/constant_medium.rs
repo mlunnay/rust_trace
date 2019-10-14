@@ -1,7 +1,7 @@
 use super::util::drand48;
 use super::aabb::AABB;
 use super::hittable::{HitRecord, Hittable};
-use super::vec::Vec3;
+use super::Vec3;
 use std::sync::Arc;
 use super::material::Material;
 use super::ray::Ray;

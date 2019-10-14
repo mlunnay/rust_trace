@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use crate::raytrace::hittable::Hittable;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 use crate::raytrace::sphere::Sphere;
 use crate::raytrace::material::Lambertian;
 use crate::raytrace::texture::MarbleTexture;

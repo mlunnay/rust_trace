@@ -1,7 +1,7 @@
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
 use super::aabb::AABB;
-use super::vec::Vec3;
+use super::Vec3;
 
 pub struct HittableList {
     pub objects: Vec<Box<dyn Hittable>>
@@ -12,6 +12,11 @@ impl HittableList {
         HittableList{
             objects: Vec::new()
         }
+    }
+
+    pub fn from_vec(v: Vec<Box<dyn Hittable>>) -> HittableList {
+        let objects = Vec::from(v);
+        HittableList{objects}
     }
 
     pub fn add(&mut self, object: Box<dyn Hittable>) {

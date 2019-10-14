@@ -1,7 +1,7 @@
 use crate::raytrace::util::drand48;
 use crate::raytrace::hittable::Hittable;
 use crate::raytrace::ray::Ray;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 use crate::raytrace::camera::Camera;
 use std::sync::Arc;
 
@@ -18,7 +18,7 @@ impl GradientBackground {}
 impl Background for GradientBackground {
     fn get(&self, ray: Ray) -> Vec3 {
         let unit_direction = ray.direction.normalize();
-        let t = 0.5 * (unit_direction.y + 1.0);
+        let t = 0.5 * (unit_direction.y() + 1.0);
         (1.0-t) * Vec3::new(1.0, 1.0, 1.0) + t*Vec3::new(0.5, 0.7, 1.0)
     }
 }

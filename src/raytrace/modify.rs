@@ -1,7 +1,7 @@
 //! Provides instance classes to modify a given hittable
 
 use super::aabb::AABB;
-use super::vec::Vec3;
+use super::Vec3;
 use super::ray::Ray;
 use super::quaternion::Quaternion;
 use super::hittable::{HitRecord, Hittable};
@@ -68,37 +68,37 @@ pub trait Rotation: Hittable {
 
     fn rotate_bounding_box(q: Quaternion, bounding_box: AABB) -> AABB {
         let mut vectors: [Vec3; 8] = [Vec3::zero(); 8];
-        vectors[0] = q * Vec3{x: bounding_box.min.x, y: bounding_box.min.y, z: bounding_box.min.z};
-        vectors[1] = q * Vec3{x: bounding_box.min.x, y: bounding_box.min.y, z: bounding_box.max.z};
-        vectors[2] = q * Vec3{x: bounding_box.min.x, y: bounding_box.max.y, z: bounding_box.min.z};
-        vectors[3] = q * Vec3{x: bounding_box.min.x, y: bounding_box.max.y, z: bounding_box.max.z};
-        vectors[4] = q * Vec3{x: bounding_box.max.x, y: bounding_box.min.y, z: bounding_box.min.z};
-        vectors[5] = q * Vec3{x: bounding_box.max.x, y: bounding_box.min.y, z: bounding_box.max.z};
-        vectors[6] = q * Vec3{x: bounding_box.max.x, y: bounding_box.max.y, z: bounding_box.min.z};
-        vectors[7] = q * Vec3{x: bounding_box.max.x, y: bounding_box.max.y, z: bounding_box.max.z};
+        vectors[0] = q * Vec3::new(bounding_box.min.x(), bounding_box.min.y(), bounding_box.min.z());
+        vectors[1] = q * Vec3::new(bounding_box.min.x(), bounding_box.min.y(), bounding_box.max.z());
+        vectors[2] = q * Vec3::new(bounding_box.min.x(), bounding_box.max.y(), bounding_box.min.z());
+        vectors[3] = q * Vec3::new(bounding_box.min.x(), bounding_box.max.y(), bounding_box.max.z());
+        vectors[4] = q * Vec3::new(bounding_box.max.x(), bounding_box.min.y(), bounding_box.min.z());
+        vectors[5] = q * Vec3::new(bounding_box.max.x(), bounding_box.min.y(), bounding_box.max.z());
+        vectors[6] = q * Vec3::new(bounding_box.max.x(), bounding_box.max.y(), bounding_box.min.z());
+        vectors[7] = q * Vec3::new(bounding_box.max.x(), bounding_box.max.y(), bounding_box.max.z());
 
         let mut min = Vec3::new(std::f64::MAX, std::f64::MAX, std::f64::MAX);
         let mut max = Vec3::new(std::f64::MIN, std::f64::MIN, std::f64::MIN);
 
         for i in 0..8 {
             let v = vectors[i];
-            if v.x < min.x {
-                min.x = v.x;
+            if v.x() < min.x() {
+                min.set_x(v.x());
             }
-            if v.x > max.x {
-                max.x = v.x
+            if v.x() > max.x() {
+                max.set_x(v.x());
             }
-            if v.y < min.y {
-                min.y = v.y;
+            if v.y() < min.y() {
+                min.set_y(v.y());
             }
-            if v.y > max.y {
-                max.y = v.y
+            if v.y() > max.y() {
+                max.set_y(v.y());
             }
-            if v.z < min.z {
-                min.z = v.z;
+            if v.z() < min.z() {
+                min.set_z(v.z());
             }
-            if v.z > max.z {
-                max.z = v.z
+            if v.z() > max.z() {
+                max.set_z(v.z());
             }
         }
 

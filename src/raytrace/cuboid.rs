@@ -1,4 +1,4 @@
-use super::vec::Vec3;
+use super::Vec3;
 use super::ray::Ray;
 use super::aabb::AABB;
 use super::hittable::*;
@@ -19,9 +19,9 @@ impl Cuboid {
 
 impl Hittable for Cuboid {
     fn hit(&self, ray: Ray, bt_min: f64, bt_max: f64) -> Option<HitRecord> {
-        let inv_d = 1.0 / ray.direction.x;
-        let t0 = (self.min.x - ray.origin.x) * inv_d;
-        let t1 = (self.max.x - ray.origin.x) * inv_d;
+        let inv_d = 1.0 / ray.direction.x();
+        let t0 = (self.min.x() - ray.origin.x()) * inv_d;
+        let t1 = (self.max.x() - ray.origin.x()) * inv_d;
         // let mut swaped = false;
         // if inv_d < 0.0 {
         //     std::mem::swap(&mut t0, &mut t1);
@@ -33,9 +33,9 @@ impl Hittable for Cuboid {
         //     return None;
         // }
 
-        let inv_d = 1.0 / ray.direction.y;
-        let t2 = (self.min.y - ray.origin.y) * inv_d;
-        let t3 = (self.max.y - ray.origin.y) * inv_d;
+        let inv_d = 1.0 / ray.direction.y();
+        let t2 = (self.min.y() - ray.origin.y()) * inv_d;
+        let t3 = (self.max.y() - ray.origin.y()) * inv_d;
         // if inv_d < 0.0 {
         //     std::mem::swap(&mut t2, &mut t3);
         //     swaped = true;
@@ -46,9 +46,9 @@ impl Hittable for Cuboid {
         //     return None;
         // }
 
-        let inv_d = 1.0 / ray.direction.z;
-        let t4 = (self.min.z - ray.origin.z) * inv_d;
-        let t5 = (self.max.z - ray.origin.z) * inv_d;
+        let inv_d = 1.0 / ray.direction.z();
+        let t4 = (self.min.z() - ray.origin.z()) * inv_d;
+        let t5 = (self.max.z() - ray.origin.z()) * inv_d;
         // if inv_d < 0.0 {
         //     std::mem::swap(&mut t4, &mut t5);
         //     swaped = true;
@@ -75,33 +75,33 @@ impl Hittable for Cuboid {
         let v: f64;
         let point = ray.point_at_parameter(t);
         let normal = if t == t0 { 
-                u = (point.z - self.min.z) / (self.max.z - self.min.z);
-                v = (point.y - self.min.y) / (self.max.y - self.min.y);
+                u = (point.z() - self.min.z()) / (self.max.z() - self.min.z());
+                v = (point.y() - self.min.y()) / (self.max.y() - self.min.y());
                 Vec3::new(-1.0, 0.0, 0.0) 
             } 
             else if t == t1 {
-                u = 1.0 - (point.z - self.min.z) / (self.max.z - self.min.z);
-                v = (point.y - self.min.y) / (self.max.y - self.min.y);
+                u = 1.0 - (point.z() - self.min.z()) / (self.max.z() - self.min.z());
+                v = (point.y() - self.min.y()) / (self.max.y() - self.min.y());
                 Vec3::new(1.0, 0.0, 0.0) 
             }
             else if t == t2 { 
-                u = (point.z - self.min.z) / (self.max.z - self.min.z);
-                v = (point.x - self.min.x) / (self.max.x - self.min.x);
+                u = (point.z() - self.min.z()) / (self.max.z() - self.min.z());
+                v = (point.x() - self.min.x()) / (self.max.x() - self.min.x());
                 Vec3::new(0.0, -1.0, 0.0)
             }
             else if t == t3 { 
-                u = 1.0 - (point.z - self.min.z) / (self.max.z - self.min.z);
-                v = (point.x - self.min.x) / (self.max.x - self.min.x);
+                u = 1.0 - (point.z() - self.min.z()) / (self.max.z() - self.min.z());
+                v = (point.x() - self.min.x()) / (self.max.x() - self.min.x());
                 Vec3::new(0.0, 1.0, 0.0)
             }
             else if t == t4 { 
-                u = (point.x - self.min.x) / (self.max.x - self.min.x);
-                v = (point.y - self.min.y) / (self.max.y - self.min.y);
+                u = (point.x() - self.min.x()) / (self.max.x() - self.min.x());
+                v = (point.y() - self.min.y()) / (self.max.y() - self.min.y());
                 Vec3::new(0.0, 0.0, -1.0)
             }
             else if t == t5 { 
-                u = 1.0 - (point.x - self.min.x) / (self.max.x - self.min.x);
-                v = (point.y - self.min.y) / (self.max.y - self.min.y);
+                u = 1.0 - (point.x() - self.min.x()) / (self.max.x() - self.min.x());
+                v = (point.y() - self.min.y()) / (self.max.y() - self.min.y());
                 Vec3::new(0.0, 0.0, 1.0)
             }
             else { panic!("t should match one of the previous values") };

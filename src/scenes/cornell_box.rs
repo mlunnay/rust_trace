@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use crate::raytrace::hittable::Hittable;
-use crate::raytrace::vec::Vec3;
+use crate::raytrace::Vec3;
 use crate::raytrace::cuboid::Cuboid;
 use crate::raytrace::material::{Lambertian, DiffuseLight};
 use crate::raytrace::texture::ConstantTexture;

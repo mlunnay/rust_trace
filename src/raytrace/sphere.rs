@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use super::vec::Vec3;
+use super::Vec3;
 use super::ray::Ray;
 use super::hittable::{Hittable, HitRecord};
 use super::material::Material;
@@ -20,9 +20,9 @@ impl Sphere {
 impl Hittable for Sphere {
     fn hit(&self, r: Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = r.origin - self.center;
-        let a = Vec3::dot(&r.direction, &r.direction);
-        let b = Vec3::dot(&oc, &r.direction);
-        let c = Vec3::dot(&oc, &oc) - self.radius * self.radius;
+        let a = Vec3::dot(r.direction, r.direction);
+        let b = Vec3::dot(oc, r.direction);
+        let c = Vec3::dot(oc, oc) - self.radius * self.radius;
         let discriminant = b * b - a * c;
         // the point is "nudged" along the normal to account for precission error to avoid artifacts in reflection
         if discriminant > 0.0 {
@@ -64,8 +64,8 @@ impl Hittable for Sphere {
 }
 
 fn get_sphere_uv(p: Vec3) -> (f64, f64) {
-    let phi = p.z.atan2(p.x);
-    let theta = p.y.asin();
+    let phi = p.z().atan2(p.x());
+    let theta = p.y().asin();
     let u = 1.0 - (phi + std::f64::consts::PI) / (2.0 * std::f64::consts::PI);
     let v = (theta + std::f64::consts::FRAC_PI_2) / std::f64::consts::PI;
     (u, v)

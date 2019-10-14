@@ -1,5 +1,5 @@
 use super::ray::Ray;
-use super::vec::Vec3;
+use super::Vec3;
 use super::hittable::HitRecord;
 use super::util::{random_in_unit_sphere, drand48};
 use super::texture::Texture;
@@ -11,7 +11,7 @@ pub trait Material: Send + Sync {
     }
 
     fn emitted(&self, _u: f64, _v: f64, _p: Vec3) -> Vec3 {
-        Vec3{x: 0.0, y: 0.0, z: 0.0}
+        Vec3::new(0.0, 0.0, 0.0)
     }
 }
 
@@ -50,7 +50,7 @@ impl Material for Metal {
         let reflected = reflect(ray_in.direction.normalize(), hit_record.normal);
         let scattered = Ray::new(hit_record.p,
             reflected + self.roughness * random_in_unit_sphere());
-        if Vec3::dot(&scattered.direction, &hit_record.normal) > 0.0 {
+        if Vec3::dot(scattered.direction, hit_record.normal) > 0.0 {
             let albedo = self.albedo.value(hit_record.u, hit_record.v, hit_record.p);
             Some((scattered, albedo))
         }
@@ -81,16 +81,16 @@ impl Material for Dielectric {
         let mut cosine: f64;
         let scattered: Ray;
 
-        if Vec3::dot(&ray_in.direction, &hit_record.normal) > 0.0 {
+        if Vec3::dot(ray_in.direction, hit_record.normal) > 0.0 {
             outward_normal = -hit_record.normal;
             ni_over_nt = self.refractive_index;
-            cosine = Vec3::dot(&ray_in.direction, &hit_record.normal) / ray_in.direction.length();
+            cosine = Vec3::dot(ray_in.direction, hit_record.normal) / ray_in.direction.length();
             cosine = f64::sqrt(1.0-self.refractive_index*self.refractive_index*(1.0-cosine*cosine));
         }
         else {
             outward_normal = hit_record.normal;
             ni_over_nt = 1.0 / self.refractive_index;
-            cosine = -Vec3::dot(&ray_in.direction, &hit_record.normal) / ray_in.direction.length();
+            cosine = -Vec3::dot(ray_in.direction, hit_record.normal) / ray_in.direction.length();
         }
         match refract(ray_in.direction, outward_normal, ni_over_nt) {
             Some(v) => {
@@ -165,12 +165,12 @@ impl Material for NormalMaterial {
 }
 
 pub fn reflect(v: Vec3, normal: Vec3) -> Vec3 {
-    v - 2.0 * Vec3::dot(&v, &normal) * normal
+    v - 2.0 * Vec3::dot(v, normal) * normal
 }
 
 pub fn refract(v: Vec3, normal: Vec3, ni_over_nt: f64) -> Option<Vec3> {
     let uv = v.normalize();
-    let dt = Vec3::dot(&uv, &normal);
+    let dt = Vec3::dot(uv, normal);
     let descriminant = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
     if descriminant > 0.0 {
         let refracted = ni_over_nt * (uv - normal * dt) - normal * f64::sqrt(descriminant);
@@ -194,8 +194,8 @@ mod tests{
     #[test]
     fn reflection() {
         let v = reflect(Vec3::new(-1.0, -1.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-        assert_eq!(v.x, 1.0);
-        assert_eq!(v.y, 1.0);
-        assert_eq!(v.z, 0.0);
+        assert_eq!(v.x(), 1.0);
+        assert_eq!(v.y(), 1.0);
+        assert_eq!(v.z(), 0.0);
     }
 }

@@ -1,4 +1,4 @@
-use super::vec::Vec3;
+use super::Vec3;
 use super::util::approx_equal;
 
 /// A quaternion rotation
@@ -13,7 +13,7 @@ pub struct Quaternion {
 impl Quaternion {
     /// Create a quaternion from a scalar and three imaginary components.
     pub fn new(s: f64, xi: f64, yk: f64, zi: f64) -> Quaternion {
-        Quaternion{s, v: Vec3{x: xi, y: yk, z: zi}}
+        Quaternion{s, v: Vec3::new(xi, yk, zi)}
     }
 
     /// Create a quaternion from a scalar and a vector.
@@ -23,21 +23,21 @@ impl Quaternion {
 
     /// Creates an empty quaternion
     pub fn zero() -> Quaternion {
-        Quaternion{s: 0.0, v: Vec3{x: 0.0, y: 0.0, z: 0.0}}
+        Quaternion{s: 0.0, v: Vec3::new(0.0, 0.0, 0.0)}
     }
 
     /// Creates an identity quaternion
     pub fn identity() -> Quaternion {
-        Quaternion{s: 1.0, v: Vec3{x: 0.0, y: 0.0, z: 0.0}}
+        Quaternion{s: 1.0, v: Vec3::new(0.0, 0.0, 0.0)}
     }
 
     pub fn elements(self) -> [f64; 4] {
-        [self.s, self.v.x, self.v.y, self.v.z]
+        [self.s, self.v.x(), self.v.y(), self.v.z()]
     }
 
     // Returns the dot product of this quaternion with another.
     pub fn dot(self, other: Quaternion) -> f64 {
-        self.s * other.s + Vec3::dot(&self.v, &other.v)
+        self.s * other.s + Vec3::dot(self.v, other.v)
     }
 
     /// Returns the conjugate (inverse) of the quaternion.
@@ -58,7 +58,7 @@ impl Quaternion {
     /// Normalize the quaternion to unit length
     pub fn normalize(&mut self) -> Quaternion { 
         let length = 1.0 / self.length();
-        Quaternion{s: self.s * length, v: Vec3{x: self.v.x * length, y: self.v.y * length, z: self.v.z * length}}
+        Quaternion{s: self.s * length, v: Vec3::new(self.v.x() * length, self.v.y() * length, self.v.z() * length)}
     }
 
     /// Returns the Eular angles for this quaternion
@@ -66,7 +66,7 @@ impl Quaternion {
         // taken from cgmath crate
         let sig = 0.4999999;
 
-        let (qw, qx, qy, qz) = (self.s, self.v.x, self.v.y, self.v.z);
+        let (qw, qx, qy, qz) = (self.s, self.v.x(), self.v.y(), self.v.z());
         let (sqw, sqx, sqy, sqz) = (qw * qw, qx * qx, qy * qy, qz * qz);
 
         let unit = sqx + sqz + sqy + sqw;
@@ -75,29 +75,31 @@ impl Quaternion {
         // We set x to zero and z to the value, but the other way would work too.
         if test > sig * unit {
             // x + z = 2 * atan(x / w)
-            Vec3 {
-                x: 0.0,
-                y: std::f64::consts::FRAC_PI_2,
-                z: f64::atan2(qx, qw) * 2.0,
-            }
-        } else if test < -sig * unit {
+            Vec3::new(
+                0.0,
+                std::f64::consts::FRAC_PI_2,
+                f64::atan2(qx, qw) * 2.0,
+            )
+        }
+        else if test < -sig * unit {
             // x - z = 2 * atan(x / w)
-            Vec3 {
-                x: 0.0,
-                y: std::f64::consts::FRAC_PI_2,
-                z: -f64::atan2(qx, qw) * 2.0,
-            }
-        } else {
+            Vec3::new(
+                0.0,
+                std::f64::consts::FRAC_PI_2,
+                -f64::atan2(qx, qw) * 2.0,
+            )
+        }
+        else {
             // Using the quat-to-matrix equation from either
             // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
             // or equation 15 on page 7 of
             // http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
             // to fill in the equations on page A-2 of the NASA document gives the below.
-            Vec3 {
-                x: f64::atan2(2.0 * (-qy * qz + qx * qw), 1.0 - 2.0 * (sqx + sqy)),
-                y: f64::asin(2.0 * (qx * qz + qy * qw)),
-                z: f64::atan2(2.0 * (-qx * qy + qz * qw), 1.0 - 2.0 * (sqy + sqz)),
-            }
+            Vec3::new(
+                f64::atan2(2.0 * (-qy * qz + qx * qw), 1.0 - 2.0 * (sqx + sqy)),
+                f64::asin(2.0 * (qx * qz + qy * qw)),
+                f64::atan2(2.0 * (-qx * qy + qz * qw), 1.0 - 2.0 * (sqy + sqz)),
+            )
         }
     }
 
@@ -106,20 +108,20 @@ impl Quaternion {
         let sin = (angle / 2.0).sin();
         let axis = axis.normalize();
         let s = (angle / 2.0).cos();
-        let x = axis.x * sin;
-        let y = axis.y * sin;
-        let z = axis.z * sin;
-        Quaternion{s: s, v: Vec3{x, y ,z}}
+        let x = axis.x() * sin;
+        let y = axis.y() * sin;
+        let z = axis.z() * sin;
+        Quaternion{s: s, v: Vec3::new(x, y, z)}
     }
 
     /// Create a Quaternion from a Vec3 of eular rotations
     pub fn from_eular_angles(v: Vec3) -> Quaternion {
-        let s_x = (v.x * 0.5).sin();
-        let s_y = (v.y * 0.5).sin();
-        let s_z = (v.z * 0.5).sin();
-        let c_x = (v.x * 0.5).cos();
-        let c_y = (v.y * 0.5).cos();
-        let c_z = (v.z * 0.5).cos();
+        let s_x = (v.x() * 0.5).sin();
+        let s_y = (v.y() * 0.5).sin();
+        let s_z = (v.z() * 0.5).sin();
+        let c_x = (v.x() * 0.5).cos();
+        let c_y = (v.y() * 0.5).cos();
+        let c_z = (v.z() * 0.5).cos();
 
         Quaternion::new(
             -s_x * s_y * s_z + c_x * c_y * c_z,
@@ -137,23 +139,23 @@ impl Quaternion {
     /// Calculates the rotation Quaternion for the angle betweel to vectors.
     pub fn from_arc(src: Vec3, dst: Vec3, fallback: Option<Vec3>) -> Quaternion {
         let length_avg = (src.length_squared() * dst.length_squared()).sqrt();
-        let dot = Vec3::dot(&src, &dst);
+        let dot = Vec3::dot(src, dst);
         if approx_equal(dot, length_avg) {
             Quaternion::identity()
         }
         else if approx_equal(dot, -length_avg) {
             // use the fallbak axis or generate a new axis.
             let axis = fallback.unwrap_or_else(|| {
-                let mut v = Vec3::cross(&Vec3::unit_x(), &src);
+                let mut v = Vec3::cross(Vec3::unit_x(), src);
                 if v.is_zero_length() {
-                    v = Vec3::cross(&Vec3::unit_y(), &src);
+                    v = Vec3::cross(Vec3::unit_y(), src);
                 }
                 v.normalize()
             });
             Quaternion::from_rotation_axis(axis, std::f64::consts::PI)
         }
         else {
-            Quaternion::from_sv(length_avg + dot, Vec3::cross(&src, &dst).normalize())
+            Quaternion::from_sv(length_avg + dot, Vec3::cross(src, dst).normalize())
         }
     }
 
@@ -190,11 +192,11 @@ impl Quaternion {
 // TODO: implement matrix conversion
 
 impl From<[f64;4]> for Quaternion {
-    fn from(arr: [f64;4]) -> Quaternion { Quaternion{s: arr[0], v: Vec3{x: arr[1], y: arr[2], z: arr[3]}} }
+    fn from(arr: [f64;4]) -> Quaternion { Quaternion{s: arr[0], v: Vec3::new(arr[1], arr[2], arr[3])} }
 }
 
 impl From<(f64, f64, f64, f64)> for Quaternion {
-    fn from(tup: (f64, f64, f64, f64)) -> Quaternion { Quaternion{s: tup.0, v: Vec3{x: tup.1, y: tup.2, z: tup.3}} }
+    fn from(tup: (f64, f64, f64, f64)) -> Quaternion { Quaternion{s: tup.0, v: Vec3::new(tup.1, tup.2, tup.3)} }
 }
 
 impl core::ops::Neg for Quaternion {
@@ -293,8 +295,8 @@ impl core::ops::Mul<Vec3> for Quaternion {
     type Output = Vec3;
 
     fn mul(self, rhs: Vec3) -> Vec3 {
-        let tmp = Vec3::cross(&self.v, &rhs) + rhs * self.s;
-        Vec3::cross(&self.v, &tmp) * 2.0 + rhs
+        let tmp = Vec3::cross(self.v, rhs) + rhs * self.s;
+        Vec3::cross(self.v, tmp) * 2.0 + rhs
     }
 }
 

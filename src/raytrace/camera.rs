@@ -1,4 +1,4 @@
-use super::vec::Vec3;
+use super::Vec3;
 use super::ray::Ray;
 use super::util::random_in_unit_disk;
 
@@ -20,8 +20,8 @@ impl Camera {
         let half_height = f64::tan(vfov / 2.0);
         let half_width = aspect * half_height;
         let w = (look_from - look_at).normalize();
-        let u = Vec3::cross(&vup, &w);
-        let v = Vec3::cross(&w, &u);
+        let u = Vec3::cross(vup, w);
+        let v = Vec3::cross(w, u);
         let lower_left_corner = look_from - half_width * focus_distance * u - half_height * focus_distance * v - focus_distance * w;
         Camera{
             origin: look_from,

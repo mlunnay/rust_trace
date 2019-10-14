@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use super::vec::Vec3;
+use super::Vec3;
 use super::ray::Ray;
 use super::material::Material;
 use super::aabb::AABB;

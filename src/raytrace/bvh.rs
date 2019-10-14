@@ -21,8 +21,8 @@ impl BVHNode {
     pub fn construct(mut hittable_list: Vec<Box<dyn Hittable>>) -> Arc<BVHNode> {
         let axis = rand::thread_rng().gen_range(0, 3);
         hittable_list.sort_by(|a,b| {
-            let left = a.required_bounding_box().min;
-            let right = b.required_bounding_box().min;
+            let left = a.required_bounding_box().min.elements();
+            let right = b.required_bounding_box().min.elements();
 
             left[axis].partial_cmp(&right[axis]).unwrap()
         });
