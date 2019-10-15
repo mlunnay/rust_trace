@@ -194,7 +194,7 @@ mod tests{
     #[test]
     fn reflection() {
         let v = reflect(Vec3::new(-1.0, -1.0, 0.0), Vec3::new(0.0, 1.0, 0.0));
-        assert_eq!(v.x(), 1.0);
+        assert_eq!(v.x(), -1.0);
         assert_eq!(v.y(), 1.0);
         assert_eq!(v.z(), 0.0);
     }
