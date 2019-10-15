@@ -92,15 +92,15 @@ impl Vec3 {
         }
     }
 
-    pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
-        v1._x * v2._x + v1._y * v2._y + v1._z * v2._z
+    pub fn dot(self, v2: Vec3) -> f64 {
+        self._x * v2._x + self._y * v2._y + self._z * v2._z
     }
 
-    pub fn cross(v1: Vec3, v2: Vec3) -> Vec3 {
+    pub fn cross(self, v2: Vec3) -> Vec3 {
         Vec3{
-            _x: v1._y * v2._z - v1._z * v2._y,
-            _y: -(v1._x * v2._z - v1._z * v2._x),
-            _z: v1._x * v2._y - v1._y * v2._x
+            _x: self._y * v2._z - self._z * v2._y,
+            _y: -(self._x * v2._z - self._z * v2._x),
+            _z: self._x * v2._y - self._y * v2._x
         }
     }
 
